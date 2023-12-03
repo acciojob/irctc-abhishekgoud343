@@ -130,22 +130,35 @@ public class TrainService {
 
         int res = 0;
 
-        for (Ticket ticket : train.getBookedTickets())
+        for (Ticket ticket : train.getBookedTickets()) {
             for (Passenger passenger : ticket.getPassengersList())
                 res = Math.max(res, passenger.getAge());
+        }
 
         return res;
     }
 
-    public List<Integer> trainsBetweenAGivenTime(Station station, LocalTime startTime, LocalTime endTime){
-
+    public List<Integer> trainsBetweenAGivenTime(Station station, LocalTime startTime, LocalTime endTime) {
         //When you are at a particular station you need to find out the number of trains that will pass through a given station
         //between a particular time frame both start time and end time included.
         //You can assume that the date change doesn't need to be done ie the travel will certainly happen with the same date (More details
         //in problem statement)
         //You can also assume the seconds and milli seconds value will be 0 in a LocalTime format.
 
-        return null;
-    }
+        List<Integer> res = new ArrayList<>();
 
+        List<Train> trainList = trainRepository.findAll();
+        for (Train train : trainList) {
+            int ind = train.getRoute().indexOf(station.name());
+
+            if (ind != -1) {
+                int hour = train.getDepartureTime().getHour() + ind;
+
+                if (hour >= startTime.getHour() && hour <= endTime.getHour())
+                    res.add(train.getTrainId());
+            }
+        }
+
+        return res;
+    }
 }

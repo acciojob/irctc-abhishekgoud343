@@ -69,12 +69,12 @@ public class TicketService {
         ticket.setTotalFare(fare);
         ticket.setPassengersList(passengerList);
 
-        ticket = ticketRepository.save(ticket);
-
         train.getBookedTickets().add(ticket);
 
         for (Passenger passenger : passengerList)
             passenger.getBookedTickets().add(ticket);
+
+        ticket = ticketRepository.save(ticket);
 
        return ticket.getTicketId();
     }
