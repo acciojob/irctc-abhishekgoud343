@@ -11,7 +11,6 @@ import com.driver.repository.TrainRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,14 +41,12 @@ public class TicketService {
         //Also in the passenger Entity change the attribute bookedTickets by using the attribute bookingPersonId.
         //And the end return the ticketId that has come from db
 
-        List<Ticket> bookedTicketsList = ticketRepository.findAll();
-
         Optional<Train> optionalTrain = trainRepository.findById(bookTicketEntryDto.getTrainId());
         if (!optionalTrain.isPresent())
             throw new Exception("Invalid train Id");
         Train train = optionalTrain.get();
 
-        int avail = train.getNoOfSeats() - bookedTicketsList.size();
+        int avail = train.getNoOfSeats() - train.getBookedTickets().size();
         if (avail < bookTicketEntryDto.getNoOfSeats())
             throw new Exception("Less tickets are available");
 

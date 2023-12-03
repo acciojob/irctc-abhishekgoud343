@@ -149,17 +149,18 @@ public class TrainService {
 
         List<Train> trainList = trainRepository.findAll();
         for (Train train : trainList) {
-            int ind = train.getRoute().indexOf(station.name());
+            String[] stations = train.getRoute().split(",");
 
-            if (ind != -1) {
-                int reachT = (train.getDepartureTime().getHour() + ind) * 60 + train.getDepartureTime().getMinute();
+            for (int i = 0; i < stations.length; ++i)
+                if (stations[i].equals(station.name())) {
+                    int reachT = (train.getDepartureTime().getHour() + i) * 60 + train.getDepartureTime().getMinute();
 
-                int startT = startTime.getHour() * 60 + startTime.getMinute();
-                int endT = endTime.getHour() * 60 + endTime.getMinute();
+                    int startT = startTime.getHour() * 60 + startTime.getMinute();
+                    int endT = endTime.getHour() * 60 + endTime.getMinute();
 
-                if (reachT >= startT && reachT <= endT)
-                    res.add(train.getTrainId());
-            }
+                    if (reachT >= startT && reachT <= endT)
+                        res.add(train.getTrainId());
+                }
         }
 
         return res;
