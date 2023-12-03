@@ -86,7 +86,7 @@ public class TrainService {
                 int indTo = Arrays.binarySearch(route, ticket.getToStation().name());
 
                 if (i >= indFrom && i <= indTo)
-                    ++seats;
+                    seats += ticket.getPassengersList().size();
             }
 
             res = Math.min(res, train.getNoOfSeats() - seats);
@@ -152,9 +152,12 @@ public class TrainService {
             int ind = train.getRoute().indexOf(station.name());
 
             if (ind != -1) {
-                int hour = train.getDepartureTime().getHour() + ind;
+                int reachT = (train.getDepartureTime().getHour() + ind) * 60 + train.getDepartureTime().getMinute();
 
-                if (hour >= startTime.getHour() && hour <= endTime.getHour())
+                int startT = startTime.getHour() * 60 + startTime.getMinute();
+                int endT = endTime.getHour() * 60 + endTime.getMinute();
+
+                if (reachT >= startT && reachT <= endT)
                     res.add(train.getTrainId());
             }
         }
