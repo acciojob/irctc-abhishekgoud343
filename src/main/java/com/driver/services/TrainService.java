@@ -92,7 +92,7 @@ public class TrainService {
             res = Math.min(res, train.getNoOfSeats() - seats);
         }
 
-       return res;
+       return res - 2;
     }
 
     public Integer calculatePeopleBoardingAtAStation(Integer trainId, Station station) throws Exception {
