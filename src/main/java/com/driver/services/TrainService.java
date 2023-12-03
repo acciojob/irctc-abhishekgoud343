@@ -77,7 +77,7 @@ public class TrainService {
         int res = train.getNoOfSeats();
 
         List<Ticket> bookedTicketList = train.getBookedTickets();
-        for (int i = from; i <= to; ++i) {
+        for (int i = from; i < to; ++i) {
             String station = route[i];
             int seats = 0;
 

@@ -58,7 +58,7 @@ public class TicketService {
         if (from == -1 || to == -1 || from >= to)
             throw new Exception("Invalid stations");
 
-        int fare = (route.split(",").length - 1) * bookTicketEntryDto.getNoOfSeats() * 300;
+        int fare = (to - from) * bookTicketEntryDto.getNoOfSeats() * 300;
 
         List<Passenger> passengerList = passengerRepository.findAllById(bookTicketEntryDto.getPassengerIds());
 
