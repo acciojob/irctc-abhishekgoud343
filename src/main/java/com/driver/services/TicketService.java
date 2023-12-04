@@ -28,19 +28,6 @@ public class TicketService {
 
 
     public Integer bookTicket(BookTicketEntryDto bookTicketEntryDto) throws Exception {
-        //Check for validity
-        //Use bookedTickets List from the TrainRepository to get bookings done against that train
-        //In case the there are insufficient tickets
-        //throw new Exception("Less tickets are available");
-        //otherwise book the ticket, calculate the price and other details
-        //Save the information in corresponding DB Tables
-        //Fare System : Check problem statement
-        //In case the train doesn't pass through the requested stations
-        //throw new Exception("Invalid stations");
-        //Save the bookedTickets in the train Object
-        //Also in the passenger Entity change the attribute bookedTickets by using the attribute bookingPersonId.
-        //And the end return the ticketId that has come from db
-
         Optional<Train> optionalTrain = trainRepository.findById(bookTicketEntryDto.getTrainId());
         if (!optionalTrain.isPresent())
             throw new Exception("Invalid train Id");
@@ -59,9 +46,10 @@ public class TicketService {
 
         train.getBookedTickets().add(ticket);
 
-        passengerRepository.findById(bookTicketEntryDto.getBookingPersonId()).get().getBookedTickets().add(ticket);
+        Passenger bookingPerson = passengerRepository.findById(bookTicketEntryDto.getBookingPersonId()).orElseThrow(() -> new Exception("Invalid booking person Id"));
+        bookingPerson.getBookedTickets().add(ticket);
 
-       return ticketRepository.save(ticket).getTicketId();
+        return ticketRepository.saveAndFlush(ticket).getTicketId();
     }
 
     private static int getFare(BookTicketEntryDto bookTicketEntryDto, Train train) throws Exception {
