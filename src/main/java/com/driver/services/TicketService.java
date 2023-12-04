@@ -59,8 +59,7 @@ public class TicketService {
 
         train.getBookedTickets().add(ticket);
 
-        for (Passenger passenger : passengerList)
-            passenger.getBookedTickets().add(ticket);
+        passengerRepository.findById(bookTicketEntryDto.getBookingPersonId()).get().getBookedTickets().add(ticket);
 
        return ticketRepository.save(ticket).getTicketId();
     }
