@@ -77,22 +77,21 @@ public class TrainService {
         int res = train.getNoOfSeats();
 
         List<Ticket> bookedTicketList = train.getBookedTickets();
-        for (int i = from; i < to; ++i) {
-            String station = route[i];
+        for (int i = from; i <= to; ++i) {
             int seats = 0;
 
             for (Ticket ticket : bookedTicketList) {
                 int indFrom = Arrays.binarySearch(route, ticket.getFromStation().name());
                 int indTo = Arrays.binarySearch(route, ticket.getToStation().name());
 
-                if (i >= indFrom && i <= indTo)
+                if (indFrom != -1 && indTo != -1 && i >= indFrom && i <= indTo)
                     seats += ticket.getPassengersList().size();
             }
 
             res = Math.min(res, train.getNoOfSeats() - seats);
         }
 
-       return res - 2;
+       return res;
     }
 
     public Integer calculatePeopleBoardingAtAStation(Integer trainId, Station station) throws Exception {
