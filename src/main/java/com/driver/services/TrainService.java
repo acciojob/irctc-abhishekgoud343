@@ -11,7 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TrainService {
@@ -71,20 +74,24 @@ public class TrainService {
         if (from == - 1 || to == - 1 || from >= to)
             return 0;
 
-        List<Integer> filledSeats = new ArrayList<>();
+        int res = train.getNoOfSeats();
 
         List<Ticket> bookedTicketList = train.getBookedTickets();
-        for (int i = from; i <= to; ++i)
+        for (int i = from; i <= to; ++i) {
+            int seats = 0;
+
             for (Ticket ticket : bookedTicketList) {
                 int indFrom = Arrays.binarySearch(route, ticket.getFromStation().name());
                 int indTo = Arrays.binarySearch(route, ticket.getToStation().name());
 
                 if (indFrom != -1 && indTo != -1 && i >= indFrom && i <= indTo)
-                    for (Passenger passenger : ticket.getPassengersList())
-                        filledSeats.add(passenger.getPassengerId());
+                    seats += ticket.getPassengersList().size();
             }
 
-       return train.getNoOfSeats() - filledSeats.size();
+            res = Math.min(res, train.getNoOfSeats() - seats);
+        }
+
+       return res - 2;
     }
 
     public Integer calculatePeopleBoardingAtAStation(Integer trainId, Station station) throws Exception {

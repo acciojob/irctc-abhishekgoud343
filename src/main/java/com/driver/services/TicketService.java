@@ -46,16 +46,7 @@ public class TicketService {
             throw new Exception("Invalid train Id");
         Train train = optionalTrain.get();
 
-        int avail = train.getNoOfSeats() - train.getBookedTickets().size();
-        if (avail < bookTicketEntryDto.getNoOfSeats())
-            throw new Exception("Less tickets are available");
-
-        String route = train.getRoute();
-        int from = route.indexOf(bookTicketEntryDto.getFromStation().name()), to = route.indexOf(bookTicketEntryDto.getToStation().name());
-        if (from == -1 || to == -1 || from >= to)
-            throw new Exception("Invalid stations");
-
-        int fare = (to - from) * bookTicketEntryDto.getNoOfSeats() * 300;
+        int fare = getFare(bookTicketEntryDto, train);
 
         List<Passenger> passengerList = passengerRepository.findAllById(bookTicketEntryDto.getPassengerIds());
 
@@ -71,8 +62,20 @@ public class TicketService {
         for (Passenger passenger : passengerList)
             passenger.getBookedTickets().add(ticket);
 
-        ticket = ticketRepository.save(ticket);
+       return ticketRepository.save(ticket).getTicketId();
+    }
 
-       return ticket.getTicketId();
+    private static int getFare(BookTicketEntryDto bookTicketEntryDto, Train train) throws Exception {
+        int avail = train.getNoOfSeats() - train.getBookedTickets().size();
+        if (avail < bookTicketEntryDto.getNoOfSeats())
+            throw new Exception("Less tickets are available");
+
+        String route = train.getRoute();
+        int from = route.indexOf(bookTicketEntryDto.getFromStation().name()), to = route.indexOf(bookTicketEntryDto.getToStation().name());
+        if (from == -1 || to == -1 || from >= to)
+            throw new Exception("Invalid stations");
+
+        int fare = (to - from) * bookTicketEntryDto.getNoOfSeats() * 300;
+        return fare;
     }
 }
