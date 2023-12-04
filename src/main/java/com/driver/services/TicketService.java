@@ -2,7 +2,6 @@ package com.driver.services;
 
 
 import com.driver.EntryDto.BookTicketEntryDto;
-import com.driver.model.Passenger;
 import com.driver.model.Ticket;
 import com.driver.model.Train;
 import com.driver.repository.PassengerRepository;
@@ -11,8 +10,7 @@ import com.driver.repository.TrainRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import javax.transaction.Transactional;
 
 @Service
 public class TicketService {
@@ -27,27 +25,21 @@ public class TicketService {
     PassengerRepository passengerRepository;
 
 
+    @Transactional
     public Integer bookTicket(BookTicketEntryDto bookTicketEntryDto) throws Exception {
-        Optional<Train> optionalTrain = trainRepository.findById(bookTicketEntryDto.getTrainId());
-        if (!optionalTrain.isPresent())
-            throw new Exception("Invalid train Id");
-        Train train = optionalTrain.get();
+        Train train = trainRepository.findById(bookTicketEntryDto.getTrainId()).orElseThrow(() -> new Exception("Invalid train Id"));
 
         int fare = getFare(bookTicketEntryDto, train);
-
-        List<Passenger> passengerList = passengerRepository.findAllById(bookTicketEntryDto.getPassengerIds());
 
         Ticket ticket = new Ticket();
         ticket.setFromStation(bookTicketEntryDto.getFromStation());
         ticket.setToStation(bookTicketEntryDto.getToStation());
         ticket.setTrain(train);
         ticket.setTotalFare(fare);
-        ticket.setPassengersList(passengerList);
+        ticket.setPassengersList(passengerRepository.findAllById(bookTicketEntryDto.getPassengerIds()));
 
-        train.getBookedTickets().add(ticket);
-
-        Passenger bookingPerson = passengerRepository.findById(bookTicketEntryDto.getBookingPersonId()).orElseThrow(() -> new Exception("Invalid booking person Id"));
-        bookingPerson.getBookedTickets().add(ticket);
+        trainRepository.addTicketToTrain(ticket, train);
+        passengerRepository.addTicketToPassenger(ticket, bookTicketEntryDto.getBookingPersonId());
 
         return ticketRepository.saveAndFlush(ticket).getTicketId();
     }
@@ -62,7 +54,6 @@ public class TicketService {
         if (from == -1 || to == -1 || from >= to)
             throw new Exception("Invalid stations");
 
-        int fare = (to - from) * bookTicketEntryDto.getNoOfSeats() * 300;
-        return fare;
+        return (to - from) * bookTicketEntryDto.getNoOfSeats() * 300; //fare
     }
 }
