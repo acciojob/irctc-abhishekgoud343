@@ -71,7 +71,7 @@ public class TrainService {
         if (from == - 1 || to == - 1 || from >= to)
             return 0;
 
-        HashSet<Integer> filledSeats = new HashSet<>();
+        List<Integer> filledSeats = new ArrayList<>();
 
         List<Ticket> bookedTicketList = train.getBookedTickets();
         for (int i = from; i <= to; ++i)
