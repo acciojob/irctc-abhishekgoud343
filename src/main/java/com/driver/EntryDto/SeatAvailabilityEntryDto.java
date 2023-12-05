@@ -1,12 +1,10 @@
 package com.driver.EntryDto;
 
-
 import com.driver.model.Station;
 
 public class SeatAvailabilityEntryDto {
 
     private int trainId;
-
 
     private Station fromStation;
 
@@ -28,7 +26,6 @@ public class SeatAvailabilityEntryDto {
     public void setTrainId(int trainId) {
         this.trainId = trainId;
     }
-
 
     public Station getFromStation() {
         return fromStation;

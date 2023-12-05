@@ -1,19 +1,17 @@
 package com.driver.EntryDto;
 
-
 import com.driver.model.Station;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BookTicketEntryDto {
 
-    private List<Integer> passengerIds;
-
+    private List<Integer> passengerIds = new ArrayList<>();
 
     private Integer bookingPersonId;
 
     private Integer trainId;
-
 
     private Station fromStation;
 
