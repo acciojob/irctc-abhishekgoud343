@@ -38,14 +38,14 @@ public class TicketService {
         //Also in the passenger Entity change the attribute bookedTickets by using the attribute bookingPersonId.
         //And the end return the ticketId that has come from db
 
-        Train train;
+        Train train = trainRepository.findById(bookTicketEntryDto.getTrainId()).orElseThrow(() -> new Exception("Invalid train Id"));
 
-        try {
-            train = trainRepository.findById(bookTicketEntryDto.getTrainId()).get();
-        }
-        catch (Exception e) {
-            throw new Exception("Invalid train Id");
-        }
+//        try {
+//            train = trainRepository.findById(bookTicketEntryDto.getTrainId()).get();
+//        }
+//        catch (Exception e) {
+//            throw new Exception("Invalid train Id");
+//        }
 
         int fare = getFare(bookTicketEntryDto, train);
 

@@ -1,6 +1,5 @@
 package com.driver.model;
 
-
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,7 +14,6 @@ import java.util.List;
 @Entity
 @Table(name = "trains")
 public class Train {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int trainId;
@@ -31,15 +29,15 @@ public class Train {
 
     private int noOfSeats;
 
-    public Train() {
-    }
-
     public Train(int trainId, String route, List<Ticket> bookedTickets, LocalTime departureTime, int noOfSeats) {
         this.trainId = trainId;
         this.route = route;
         this.bookedTickets = bookedTickets;
         this.departureTime = departureTime;
         this.noOfSeats = noOfSeats;
+    }
+
+    public Train() {
     }
 
     public int getTrainId() {

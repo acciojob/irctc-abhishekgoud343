@@ -1,6 +1,5 @@
 package com.driver.model;
 
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -8,13 +7,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "passenger")
 public class Passenger {
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int passengerId;
@@ -23,20 +21,19 @@ public class Passenger {
 
     private int age;
 
-    //passengers and tickets are many to manny
-
-    public Passenger() {
-    }
-
+    //passengers and tickets are many to many
     @ManyToMany
     @JoinColumn
-    private List<Ticket> bookedTickets;
+    private List<Ticket> bookedTickets = new ArrayList<>();
 
     public Passenger(int passengerId, String name, int age, List<Ticket> bookedTickets) {
         this.passengerId = passengerId;
         this.name = name;
         this.age = age;
         this.bookedTickets = bookedTickets;
+    }
+
+    public Passenger() {
     }
 
     public int getPassengerId() {
@@ -71,4 +68,3 @@ public class Passenger {
         this.bookedTickets = bookedTickets;
     }
 }
-
