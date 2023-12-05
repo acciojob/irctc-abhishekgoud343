@@ -38,14 +38,16 @@ public class TicketService {
         //Also in the passenger Entity change the attribute bookedTickets by using the attribute bookingPersonId.
         //And the end return the ticketId that has come from db
 
-        Train train = trainRepository.findById(bookTicketEntryDto.getTrainId()).orElseThrow(() -> new Exception("Invalid train Id"));
+        if (bookTicketEntryDto == null)
+            throw new Exception("Cannot book ticket");
 
-//        try {
-//            train = trainRepository.findById(bookTicketEntryDto.getTrainId()).get();
-//        }
-//        catch (Exception e) {
-//            throw new Exception("Invalid train Id");
-//        }
+        Train train; //= trainRepository.findById(bookTicketEntryDto.getTrainId()).orElseThrow(() -> new Exception("Invalid train Id"));
+        try {
+            train = trainRepository.findById(bookTicketEntryDto.getTrainId()).get();
+        }
+        catch (Exception e) {
+            throw new Exception("Invalid train Id");
+        }
 
         int fare = getFare(bookTicketEntryDto, train);
 
@@ -56,10 +58,11 @@ public class TicketService {
         ticket.setTotalFare(fare);
         ticket.setPassengersList(passengerRepository.findAllById(bookTicketEntryDto.getPassengerIds()));
 
-        trainRepository.addTicketToTrain(ticket, train);
-        passengerRepository.addTicketToPassenger(ticket, bookTicketEntryDto.getBookingPersonId());
+        train.getBookedTickets().add(ticket);
+        for (Integer passengerId : bookTicketEntryDto.getPassengerIds())
+            passengerRepository.findById(passengerId).get().getBookedTickets().add(ticket);
 
-        return ticketRepository.saveAndFlush(ticket).getTicketId();
+        return ticketRepository.save(ticket).getTicketId();
     }
 
     private static int getFare(BookTicketEntryDto bookTicketEntryDto, Train train) throws Exception {
