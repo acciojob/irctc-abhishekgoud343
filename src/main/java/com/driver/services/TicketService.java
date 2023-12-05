@@ -1,6 +1,5 @@
 package com.driver.services;
 
-
 import com.driver.EntryDto.BookTicketEntryDto;
 import com.driver.model.Ticket;
 import com.driver.model.Train;
@@ -24,10 +23,29 @@ public class TicketService {
     @Autowired
     PassengerRepository passengerRepository;
 
-
     @Transactional
     public Integer bookTicket(BookTicketEntryDto bookTicketEntryDto) throws Exception {
-        Train train = trainRepository.findById(bookTicketEntryDto.getTrainId()).orElseThrow(() -> new Exception("Invalid train Id"));
+        //Check for validity
+        //Use bookedTickets List from the TrainRepository to get bookings done against that train
+        //In case the there are insufficient tickets
+        // throw new Exception("Less tickets are available");
+        //otherwise book the ticket, calculate the price and other details
+        //Save the information in corresponding DB Tables
+        //Fare System : Check problem statement
+        //In case the train doesn't pass through the requested stations
+        //throw new Exception("Invalid stations");
+        //Save the bookedTickets in the train Object
+        //Also in the passenger Entity change the attribute bookedTickets by using the attribute bookingPersonId.
+        //And the end return the ticketId that has come from db
+
+        Train train;
+
+        try {
+            train = trainRepository.findById(bookTicketEntryDto.getTrainId()).get();
+        }
+        catch (Exception e) {
+            throw new Exception("Invalid train Id");
+        }
 
         int fare = getFare(bookTicketEntryDto, train);
 
